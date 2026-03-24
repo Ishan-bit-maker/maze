@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfinding Visualizer | Logic & Complexity</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="logo">
+            <span class="gradient-text">PathFinder</span>
+            <span class="version">v1.0</span>
+        </div>
+        <nav class="controls">
+            <div class="control-group">
+                <label for="algo-select">Algorithm</label>
+                <select id="algo-select">
+                    <option value="astar">A* Algorithm</option>
+                    <option value="bfs">Breadth-First Search</option>
+                    <option value="dfs">Depth-First Search</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="speed-range">Speed</label>
+                <input type="range" id="speed-range" min="1" max="100" value="50">
+            </div>
+            <div class="button-group">
+                <button id="start-btn" class="btn btn-primary">Visualize</button>
+                <button id="clear-board-btn" class="btn btn-outline">Clear Board</button>
+                <button id="clear-walls-btn" class="btn btn-outline">Clear Walls</button>
+                <button id="random-maze-btn" class="btn btn-outline">Random Maze</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div id="grid-container" class="grid-container">
+            <!-- Grid will be generated here -->
+        </div>
+
+        <aside class="dashboard glass">
+            <div class="stats-header">
+                <h2>Analysis Dashboard</h2>
+                <span class="status-badge" id="app-status">Ready</span>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Nodes Visited</h3>
+                    <p id="stat-nodes-visited" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Path Length</h3>
+                    <p id="stat-path-length" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Execution Time</h3>
+                    <p id="stat-time" class="stat-value">0ms</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Complexity</h3>
+                    <p id="stat-complexity" class="stat-value">-</p>
+                </div>
+            </div>
+            <div class="comparison-chart glass">
+                <h3>Live Comparison</h3>
+                <div class="chart-container">
+                    <div class="chart-bar-group">
+                        <label>A* (Optimal)</label>
+                        <div class="bar-bg"><div id="bar-astar" class="bar" style="width: 0%"></div></div>
+                    </div>
+                    <div class="chart-bar-group">
+                        <label>BFS (Shortest)</label>
+                        <div class="bar-bg"><div id="bar-bfs" class="bar" style="width: 0%"></div></div>
+                    </div>
+                    <div class="chart-bar-group">
+                        <label>DFS (Random)</label>
+                        <div class="bar-bg"><div id="bar-dfs" class="bar" style="width: 0%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="glass">
+        <div class="legend">
+            <div class="legend-item"><div class="node-sample node-start"></div> Start</div>
+            <div class="legend-item"><div class="node-sample node-end"></div> End</div>
+            <div class="legend-item"><div class="node-sample node-wall"></div> Wall</div>
+            <div class="legend-item"><div class="node-sample node-visited"></div> Visited</div>
+            <div class="legend-item"><div class="node-sample node-path"></div> Path</div>
+        </div>
+    </footer >
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>
