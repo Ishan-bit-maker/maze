@@ -67,12 +67,32 @@ function updateNodeUI(r, c) {
     const div = document.getElementById(`node-${r}-${c}`);
     if (!div) return;
 
+    // Reset keeping only 'node' base class
     div.className = 'node';
+    
     if (node.isStart) div.classList.add('node-start');
     else if (node.isEnd) div.classList.add('node-end');
     else if (node.isWall) div.classList.add('node-wall');
     else if (node.isPath) div.classList.add('node-path');
-    else if (node.isVisited) div.classList.add('node-visited');
+    else if (node.isVisited) {
+        div.classList.add('node-visited');
+        // Add branch visualization
+        if (node.previousNode) {
+            const branch = document.createElement('div');
+            branch.className = 'branch';
+            const dr = node.row - node.previousNode.row;
+            const dc = node.col - node.previousNode.col;
+
+            if (dr === 1) branch.classList.add('branch-up');
+            else if (dr === -1) branch.classList.add('branch-down');
+            else if (dc === 1) branch.classList.add('branch-left');
+            else if (dc === -1) branch.classList.add('branch-right');
+            
+            // Clear existing branches if any (though reset className should handle it)
+            const existingBranch = div.querySelector('.branch');
+            if (!existingBranch) div.appendChild(branch);
+        }
+    }
 }
 
 // Handlers
