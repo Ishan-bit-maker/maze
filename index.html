@@ -14,7 +14,7 @@
     <header>
         <div class="logo">
             <span class="terminal-text">PATHFINDER_CONSOLE</span>
-            <span class="version">v2.0_BLUE</span>
+            <span class="version">PRO</span>
         </div>
         <nav class="controls">
             <div class="control-group">
@@ -43,42 +43,47 @@
             <!-- Grid will be generated here -->
         </div>
 
-        <aside class="dashboard glass">
-            <div class="stats-header">
-                <h2>Analysis Dashboard</h2>
-                <span class="status-badge" id="app-status">Ready</span>
+        <aside class="dashboard">
+            <div class="dashboard-card">
+                <div class="stats-header">
+                    <h2>Live Statistics</h2>
+                    <span class="status-badge" id="app-status">Ready</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Visited</h3>
+                        <p id="stat-nodes-visited" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Path</h3>
+                        <p id="stat-path-length" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Time</h3>
+                        <p id="stat-time" class="stat-value">0ms</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Complexity</h3>
+                        <p id="stat-complexity" class="stat-value">-</p>
+                    </div>
+                </div>
             </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Nodes Visited</h3>
-                    <p id="stat-nodes-visited" class="stat-value">0</p>
+
+            <div class="dashboard-card">
+                <div class="stats-header">
+                    <h2>Performance</h2>
                 </div>
-                <div class="stat-card">
-                    <h3>Path Length</h3>
-                    <p id="stat-path-length" class="stat-value">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Execution Time</h3>
-                    <p id="stat-time" class="stat-value">0ms</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Complexity</h3>
-                    <p id="stat-complexity" class="stat-value">-</p>
-                </div>
-            </div>
-            <div class="comparison-chart glass">
-                <h3>Live Comparison</h3>
-                <div class="chart-container">
+                <div class="comparison-chart">
                     <div class="chart-bar-group">
-                        <label>A* (Optimal)</label>
+                        <label>A* (Heuristic)</label>
                         <div class="bar-bg"><div id="bar-astar" class="bar" style="width: 0%"></div></div>
                     </div>
                     <div class="chart-bar-group">
-                        <label>BFS (Shortest)</label>
+                        <label>BFS (Uniform)</label>
                         <div class="bar-bg"><div id="bar-bfs" class="bar" style="width: 0%"></div></div>
                     </div>
                     <div class="chart-bar-group">
-                        <label>DFS (Random)</label>
+                        <label>DFS (Exhaustive)</label>
                         <div class="bar-bg"><div id="bar-dfs" class="bar" style="width: 0%"></div></div>
                     </div>
                 </div>
