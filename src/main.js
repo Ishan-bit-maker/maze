@@ -173,8 +173,9 @@ async function startVisualization() {
     grid.reset();
     renderGrid();
     statusBadge.innerText = 'Running...';
-    statusBadge.style.background = 'rgba(255, 184, 0, 0.1)';
-    statusBadge.style.color = '#ffb800';
+    statusBadge.style.background = 'rgba(0, 153, 255, 0.1)';
+    statusBadge.style.color = 'var(--primary)';
+    statusBadge.style.borderColor = 'var(--primary)';
 
     const algoType = algoSelect.value;
     let pathfinder;
@@ -222,8 +223,9 @@ async function startVisualization() {
 
     isRunning = false;
     statusBadge.innerText = result.path.length > 0 ? 'Success' : 'No Path Found';
-    statusBadge.style.background = result.path.length > 0 ? 'rgba(0, 255, 163, 0.1)' : 'rgba(255, 60, 0, 0.1)';
-    statusBadge.style.color = result.path.length > 0 ? 'var(--accent)' : 'var(--end)';
+    statusBadge.style.background = result.path.length > 0 ? 'rgba(0, 255, 204, 0.1)' : 'rgba(255, 77, 77, 0.1)';
+    statusBadge.style.color = result.path.length > 0 ? 'var(--success)' : 'var(--danger)';
+    statusBadge.style.borderColor = result.path.length > 0 ? 'var(--success)' : 'var(--danger)';
 }
 
 function updateComparisonChart(type, result) {
@@ -240,8 +242,9 @@ function resetStats() {
     statTime.innerText = '0ms';
     statComplexity.innerText = '-';
     statusBadge.innerText = 'Ready';
-    statusBadge.style.background = 'rgba(0, 255, 163, 0.1)';
-    statusBadge.style.color = 'var(--accent)';
+    statusBadge.style.background = 'rgba(255, 255, 255, 0.05)';
+    statusBadge.style.color = 'var(--text-muted)';
+    statusBadge.style.borderColor = 'var(--border)';
     Object.values(bars).forEach(bar => bar.style.width = '0%');
 }
 
