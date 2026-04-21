@@ -49,7 +49,13 @@ function renderGrid() {
             const div = document.createElement('div');
             div.id = `node-${r}-${c}`;
             div.className = 'node';
-            if (node.isStart) div.classList.add('node-start');
+            if (node.isStart) {
+                div.classList.add('node-start');
+                const character = document.createElement('div');
+                character.id = 'steve-character';
+                character.className = 'character';
+                div.appendChild(character);
+            }
             if (node.isEnd) div.classList.add('node-end');
             if (node.isWall) div.classList.add('node-wall');
             
@@ -67,6 +73,10 @@ function updateNodeUI(r, c) {
     const div = document.getElementById(`node-${r}-${c}`);
     if (!div) return;
 
+    // Save character if it's there
+    const character = document.getElementById('steve-character');
+    const isCharacterHere = div.contains(character);
+
     // Reset keeping only 'node' base class
     div.className = 'node';
     
@@ -74,24 +84,10 @@ function updateNodeUI(r, c) {
     else if (node.isEnd) div.classList.add('node-end');
     else if (node.isWall) div.classList.add('node-wall');
     else if (node.isPath) div.classList.add('node-path');
-    else if (node.isVisited) {
-        div.classList.add('node-visited');
-        // Add branch visualization
-        if (node.previousNode) {
-            const branch = document.createElement('div');
-            branch.className = 'branch';
-            const dr = node.row - node.previousNode.row;
-            const dc = node.col - node.previousNode.col;
+    else if (node.isVisited) div.classList.add('node-visited');
 
-            if (dr === 1) branch.classList.add('branch-up');
-            else if (dr === -1) branch.classList.add('branch-down');
-            else if (dc === 1) branch.classList.add('branch-left');
-            else if (dc === -1) branch.classList.add('branch-right');
-            
-            // Clear existing branches if any (though reset className should handle it)
-            const existingBranch = div.querySelector('.branch');
-            if (!existingBranch) div.appendChild(branch);
-        }
+    if (isCharacterHere && character) {
+        div.appendChild(character);
     }
 }
 
@@ -114,7 +110,7 @@ function handleMouseEnter(r, c) {
     if (isMovingStart) {
         if (!node.isEnd && !node.isWall) {
             grid.setStart(r, c);
-            renderGrid(); // Redraw for simplicity, can be optimized
+            renderGrid();
         }
     } else if (isMovingEnd) {
         if (!node.isStart && !node.isWall) {
@@ -148,23 +144,69 @@ function setupEventListeners() {
     });
     randomMazeBtn.addEventListener('click', () => {
         if (isRunning) return;
-        generateRandomMaze();
+        generateRecursiveMaze();
     });
     speedRange.addEventListener('input', (e) => {
-        speed = 101 - e.target.value; // Invert so higher value = faster
+        speed = 101 - e.target.value;
     });
 }
 
-function generateRandomMaze() {
+async function generateRecursiveMaze() {
+    isRunning = true;
     grid.clearWalls();
+    
+    // Fill with walls
     for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-            if (Math.random() < 0.25) {
-                grid.toggleWall(r, c);
-            }
+            grid.nodes[r][c].isWall = true;
         }
     }
+
+    const unvisited = [];
+    for (let r = 0; r < ROWS; r += 2) {
+        for (let c = 0; c < COLS; c += 2) {
+            unvisited.push(`${r}-${c}`);
+        }
+    }
+
+    const stack = [];
+    let current = grid.nodes[0][0];
+    current.isWall = false;
+    stack.push(current);
+
+    while (stack.length > 0) {
+        const neighbors = [];
+        const dr = [-2, 2, 0, 0];
+        const dc = [0, 0, -2, 2];
+
+        for (let i = 0; i < 4; i++) {
+            const nr = stack[stack.length - 1].row + dr[i];
+            const nc = stack[stack.length - 1].col + dc[i];
+            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && grid.nodes[nr][nc].isWall) {
+                neighbors.push(grid.nodes[nr][nc]);
+            }
+        }
+
+        if (neighbors.length > 0) {
+            const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+            const wallR = (stack[stack.length - 1].row + next.row) / 2;
+            const wallC = (stack[stack.length - 1].col + next.col) / 2;
+            grid.nodes[wallR][wallC].isWall = false;
+            next.isWall = false;
+            stack.push(next);
+            if (Math.random() > 0.3) renderGrid(); // Visual feedback
+            await new Promise(r => setTimeout(r, 5));
+        } else {
+            stack.pop();
+        }
+    }
+
+    // Ensure start and end are passages
+    grid.startNode.isWall = false;
+    grid.endNode.isWall = false;
+    
     renderGrid();
+    isRunning = false;
 }
 
 async function startVisualization() {
@@ -173,28 +215,15 @@ async function startVisualization() {
     grid.reset();
     renderGrid();
     statusBadge.innerText = 'RUNNING...';
-    statusBadge.style.color = '#ffff00'; // Yellow for running
+    statusBadge.style.color = '#ffff00';
 
     const algoType = algoSelect.value;
     let pathfinder;
-    let complexityLabel = "";
-
     switch (algoType) {
-        case 'bfs': 
-            pathfinder = new BFSPathfinder(); 
-            complexityLabel = "O(V + E)";
-            break;
-        case 'dfs': 
-            pathfinder = new DFSPathfinder(); 
-            complexityLabel = "O(V + E)";
-            break;
-        case 'astar': 
-            pathfinder = new AStarPathfinder(); 
-            complexityLabel = "O(E log V)";
-            break;
+        case 'bfs': pathfinder = new BFSPathfinder(); break;
+        case 'dfs': pathfinder = new DFSPathfinder(); break;
+        case 'astar': pathfinder = new AStarPathfinder(); break;
     }
-
-    statComplexity.innerText = complexityLabel;
 
     const result = await pathfinder.findPath(
         grid.nodes, 
@@ -208,10 +237,18 @@ async function startVisualization() {
     );
 
     if (result.path.length > 0) {
+        const character = document.getElementById('steve-character');
         for (const node of result.path) {
             node.isPath = true;
             updateNodeUI(node.row, node.col);
-            await new Promise(r => setTimeout(r, 10));
+            
+            // Move character
+            const nodeDiv = document.getElementById(`node-${node.row}-${node.col}`);
+            if (nodeDiv && character) {
+                nodeDiv.appendChild(character);
+            }
+            
+            await new Promise(r => setTimeout(r, 30));
         }
     }
 
@@ -227,9 +264,7 @@ async function startVisualization() {
 function updateComparisonChart(type, result) {
     const maxNodes = ROWS * COLS;
     const percentage = (result.visitedNodesInOrder.length / maxNodes) * 100;
-    if (bars[type]) {
-        bars[type].style.width = `${percentage}%`;
-    }
+    if (bars[type]) bars[type].style.width = `${percentage}%`;
 }
 
 function resetStats() {
