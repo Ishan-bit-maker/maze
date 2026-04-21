@@ -172,10 +172,8 @@ async function startVisualization() {
     isRunning = true;
     grid.reset();
     renderGrid();
-    statusBadge.innerText = 'Running...';
-    statusBadge.style.background = 'rgba(0, 153, 255, 0.1)';
-    statusBadge.style.color = 'var(--primary)';
-    statusBadge.style.borderColor = 'var(--primary)';
+    statusBadge.innerText = 'RUNNING...';
+    statusBadge.style.color = '#ffff00'; // Yellow for running
 
     const algoType = algoSelect.value;
     let pathfinder;
@@ -222,10 +220,8 @@ async function startVisualization() {
     updateComparisonChart(algoType, result);
 
     isRunning = false;
-    statusBadge.innerText = result.path.length > 0 ? 'Success' : 'No Path Found';
-    statusBadge.style.background = result.path.length > 0 ? 'rgba(0, 255, 204, 0.1)' : 'rgba(255, 77, 77, 0.1)';
-    statusBadge.style.color = result.path.length > 0 ? 'var(--success)' : 'var(--danger)';
-    statusBadge.style.borderColor = result.path.length > 0 ? 'var(--success)' : 'var(--danger)';
+    statusBadge.innerText = result.path.length > 0 ? 'SUCCESS!' : 'NO PATH!';
+    statusBadge.style.color = result.path.length > 0 ? '#00ff00' : '#ff0000';
 }
 
 function updateComparisonChart(type, result) {
@@ -241,10 +237,8 @@ function resetStats() {
     statPathLength.innerText = '0';
     statTime.innerText = '0ms';
     statComplexity.innerText = '-';
-    statusBadge.innerText = 'Ready';
-    statusBadge.style.background = 'rgba(255, 255, 255, 0.05)';
-    statusBadge.style.color = 'var(--text-muted)';
-    statusBadge.style.borderColor = 'var(--border)';
+    statusBadge.innerText = 'READY';
+    statusBadge.style.color = '#00ff00';
     Object.values(bars).forEach(bar => bar.style.width = '0%');
 }
 
